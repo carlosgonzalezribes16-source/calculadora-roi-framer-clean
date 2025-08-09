@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
@@ -15,9 +14,9 @@ export default function CalculadoraROI({ clean = true, compact = true }) {
   const calcularCosteServicio = () => {
     const minutosMensuales = datos.llamadasDiarias * datos.diasLaborables * datos.minutosPromedio;
     let costePorMinuto = 0, costePlan = 0;
-    if (datos.plan === "basic"){ costePorMinuto = 0.25; costePlan = 149; }
-    else if (datos.plan === "pro"){ costePorMinuto = 0.22; costePlan = 199; }
-    else if (datos.plan === "premium"){ costePorMinuto = 0.19; costePlan = 299; }
+    if (datos.plan === "basic") { costePorMinuto = 0.25; costePlan = 149; }
+    else if (datos.plan === "pro") { costePorMinuto = 0.22; costePlan = 199; }
+    else if (datos.plan === "premium") { costePorMinuto = 0.19; costePlan = 299; }
     return minutosMensuales * costePorMinuto + costePlan;
   };
 
@@ -42,10 +41,14 @@ export default function CalculadoraROI({ clean = true, compact = true }) {
 
   return (
     <div className={`container ${compact ? "compact" : ""}`}>
-      <h1 className={clean ? "hidden" : ""}> </span>?</h1>
-      <p className={clean ? "hidden" : "muted"}> </p>
-
-      <div className="spacer"></div>
+      {/* Encabezado opcional: solo se muestra si clean === false */}
+      {!clean && (
+        <>
+          <h1>¿Cuánto gana tu negocio con <span className="accent">codeX</span>?</h1>
+          <p className="muted">Completa los datos y descubre tu ROI automáticamente.</p>
+          <div className="spacer" />
+        </>
+      )}
 
       <div className="card">
         <div className="content grid grid-2">
@@ -80,12 +83,12 @@ export default function CalculadoraROI({ clean = true, compact = true }) {
         </div>
       </div>
 
-      <div className="spacer"></div>
+      <div className="spacer" />
 
       <div className="grid grid-2">
         <div className="card">
           <div className="content">
-            <h2 style={{marginTop:0}}>Resultados</h2>
+            <h2 style={{ marginTop: 0 }}>Resultados</h2>
             <div>
               <p>Clientes perdidos al mes: <strong>{resultados.clientesPerdidos}</strong></p>
               <p>Dinero perdido por llamadas no atendidas: <strong>{resultados.dineroPerdido.toFixed(2)} €</strong></p>
@@ -99,7 +102,7 @@ export default function CalculadoraROI({ clean = true, compact = true }) {
 
         <div className="card">
           <div className="content">
-            <h2 style={{marginTop:0}}>Comparativa visual</h2>
+            <h2 style={{ marginTop: 0 }}>Comparativa visual</h2>
             <div style={{ width: "100%", height: 220 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData}>
