@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
-export default function CalculadoraROI({ clean = true, compact = true }) {
+export default function CalculadoraROI({ compact = true }) {
   const [datos, setDatos] = useState({
     llamadasDiarias: 6,
     llamadasPerdidas: 2,
@@ -41,14 +41,7 @@ export default function CalculadoraROI({ clean = true, compact = true }) {
 
   return (
     <div className={`container ${compact ? "compact" : ""}`}>
-      {/* Encabezado opcional: solo se muestra si clean === false */}
-      {!clean && (
-        <>
-          <h1>¿Cuánto gana tu negocio con <span className="accent">codeX</span>?</h1>
-          <p className="muted">Completa los datos y descubre tu ROI automáticamente.</p>
-          <div className="spacer" />
-        </>
-      )}
+      {/* Eliminado el encabezado duplicado */}
 
       <div className="card">
         <div className="content grid grid-2">
@@ -83,7 +76,7 @@ export default function CalculadoraROI({ clean = true, compact = true }) {
         </div>
       </div>
 
-      <div className="spacer" />
+      <div className="spacer"></div>
 
       <div className="grid grid-2">
         <div className="card">
