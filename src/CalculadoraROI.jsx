@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
-export default function CalculadoraROI({ compact = true }) {
+export default function CalculadoraROI({ clean = true, compact = true }) {
   const [datos, setDatos] = useState({
     llamadasDiarias: 6,
     llamadasPerdidas: 2,
@@ -14,9 +14,9 @@ export default function CalculadoraROI({ compact = true }) {
   const calcularCosteServicio = () => {
     const minutosMensuales = datos.llamadasDiarias * datos.diasLaborables * datos.minutosPromedio;
     let costePorMinuto = 0, costePlan = 0;
-    if (datos.plan === "basic") { costePorMinuto = 0.25; costePlan = 149; }
-    else if (datos.plan === "pro") { costePorMinuto = 0.22; costePlan = 199; }
-    else if (datos.plan === "premium") { costePorMinuto = 0.19; costePlan = 299; }
+    if (datos.plan === "basic"){ costePorMinuto = 0.25; costePlan = 149; }
+    else if (datos.plan === "pro"){ costePorMinuto = 0.22; costePlan = 199; }
+    else if (datos.plan === "premium"){ costePorMinuto = 0.19; costePlan = 299; }
     return minutosMensuales * costePorMinuto + costePlan;
   };
 
@@ -40,72 +40,89 @@ export default function CalculadoraROI({ compact = true }) {
   ];
 
   return (
-    <div className={`container ${compact ? "compact" : ""}`}>
-      {/* Eliminado el encabezado duplicado */}
-
-      <div className="card">
-        <div className="content grid grid-2">
-          <div>
-            <label>Media de llamadas diarias</label>
-            <input type="number" name="llamadasDiarias" value={datos.llamadasDiarias} onChange={handleChange} />
-          </div>
-          <div>
-            <label>Llamadas perdidas diarias</label>
-            <input type="number" name="llamadasPerdidas" value={datos.llamadasPerdidas} onChange={handleChange} />
-          </div>
-          <div>
-            <label>Valor medio por cliente (€)</label>
-            <input type="number" name="valorCliente" value={datos.valorCliente} onChange={handleChange} />
-          </div>
-          <div>
-            <label>Días laborables al mes</label>
-            <input type="number" name="diasLaborables" value={datos.diasLaborables} onChange={handleChange} />
-          </div>
-          <div>
-            <label>Minutos promedio por llamada</label>
-            <input type="number" name="minutosPromedio" value={datos.minutosPromedio} onChange={handleChange} step="0.1" />
-          </div>
-          <div>
-            <label>Plan contratado</label>
-            <select name="plan" value={datos.plan} onChange={handleChange}>
-              <option value="basic">Basic (149 €)</option>
-              <option value="pro">Pro (199 €)</option>
-              <option value="premium">Premium (299 €)</option>
-            </select>
-          </div>
+    <div className={`container ${compact ? "compact" : ""}`} style={{ padding: "2rem", maxWidth: "1100px", margin: "0 auto" }}>
+      {/* Formulario */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+        gap: "1.5rem",
+        background: "rgba(255,255,255,0.2)",
+        backdropFilter: "blur(12px)",
+        borderRadius: "20px",
+        padding: "2rem",
+        boxShadow: "0 8px 32px rgba(0,0,0,0.15)"
+      }}>
+        <div>
+          <label>Media de llamadas diarias</label>
+          <input type="number" name="llamadasDiarias" value={datos.llamadasDiarias} onChange={handleChange} />
+        </div>
+        <div>
+          <label>Llamadas perdidas diarias</label>
+          <input type="number" name="llamadasPerdidas" value={datos.llamadasPerdidas} onChange={handleChange} />
+        </div>
+        <div>
+          <label>Valor medio por cliente (€)</label>
+          <input type="number" name="valorCliente" value={datos.valorCliente} onChange={handleChange} />
+        </div>
+        <div>
+          <label>Días laborables al mes</label>
+          <input type="number" name="diasLaborables" value={datos.diasLaborables} onChange={handleChange} />
+        </div>
+        <div>
+          <label>Minutos promedio por llamada</label>
+          <input type="number" name="minutosPromedio" value={datos.minutosPromedio} onChange={handleChange} step="0.1" />
+        </div>
+        <div>
+          <label>Plan contratado</label>
+          <select name="plan" value={datos.plan} onChange={handleChange}>
+            <option value="basic">Basic (149 €)</option>
+            <option value="pro">Pro (199 €)</option>
+            <option value="premium">Premium (299 €)</option>
+          </select>
         </div>
       </div>
 
-      <div className="spacer"></div>
-
-      <div className="grid grid-2">
-        <div className="card">
-          <div className="content">
-            <h2 style={{ marginTop: 0 }}>Resultados</h2>
-            <div>
-              <p>Clientes perdidos al mes: <strong>{resultados.clientesPerdidos}</strong></p>
-              <p>Dinero perdido por llamadas no atendidas: <strong>{resultados.dineroPerdido.toFixed(2)} €</strong></p>
-              <p>Coste total del servicio codeX: <strong>{resultados.costeServicio.toFixed(2)} €</strong></p>
-              <p>Ganancia neta con codeX: <strong>{resultados.gananciaNeta.toFixed(2)} €</strong></p>
-              <p>ROI: <strong>{resultados.roi}%</strong></p>
-              <p className="small">* Solo considera llamadas perdidas. No incluye chats, reservas, pedidos ni horas ahorradas.</p>
-            </div>
-          </div>
+      {/* Resultados y gráfico */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+        gap: "1.5rem",
+        marginTop: "2rem"
+      }}>
+        <div style={{
+          background: "rgba(255,255,255,0.25)",
+          backdropFilter: "blur(10px)",
+          borderRadius: "20px",
+          padding: "1.5rem",
+          boxShadow: "0 8px 24px rgba(0,0,0,0.1)"
+        }}>
+          <h2 style={{ marginTop: 0 }}>Resultados</h2>
+          <p>Clientes perdidos al mes: <strong>{resultados.clientesPerdidos}</strong></p>
+          <p>Dinero perdido por llamadas no atendidas: <strong>{resultados.dineroPerdido.toFixed(2)} €</strong></p>
+          <p>Coste total del servicio codeX: <strong>{resultados.costeServicio.toFixed(2)} €</strong></p>
+          <p>Ganancia neta con codeX: <strong>{resultados.gananciaNeta.toFixed(2)} €</strong></p>
+          <p>ROI: <strong>{resultados.roi}%</strong></p>
+          <p style={{ fontSize: "0.8rem", opacity: 0.8 }}>* Solo considera llamadas perdidas. No incluye chats, reservas, pedidos ni horas ahorradas.</p>
         </div>
 
-        <div className="card">
-          <div className="content">
-            <h2 style={{ marginTop: 0 }}>Comparativa visual</h2>
-            <div style={{ width: "100%", height: 220 }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData}>
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="euros" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+        <div style={{
+          background: "rgba(255,255,255,0.25)",
+          backdropFilter: "blur(10px)",
+          borderRadius: "20px",
+          padding: "1.5rem",
+          boxShadow: "0 8px 24px rgba(0,0,0,0.1)"
+        }}>
+          <h2 style={{ marginTop: 0 }}>Comparativa visual</h2>
+          <div style={{ width: "100%", height: 240 }}>
+            <ResponsiveContainer>
+              <BarChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="euros" fill="#6c63ff" radius={[8, 8, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>
