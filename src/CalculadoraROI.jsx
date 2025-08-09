@@ -42,8 +42,8 @@ export default function CalculadoraROI({ clean = true, compact = true }) {
 
   return (
     <div className={`container ${compact ? "compact" : ""}`}>
-      <h1 className={clean ? "hidden" : ""}>¿Cuánto gana tu negocio con <span className="accent">codeX</span>?</h1>
-      <p className={clean ? "hidden" : "muted"}>Completa los datos y descubre tu ROI automáticamente.</p>
+      <h1 className={clean ? "hidden" : ""}> </span>?</h1>
+      <p className={clean ? "hidden" : "muted"}> </p>
 
       <div className="spacer"></div>
 
